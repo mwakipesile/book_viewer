@@ -1,8 +1,16 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (5.0.0.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (~> 0.7)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
     backports (3.6.8)
+    concurrent-ruby (1.0.2)
     erubis (2.7.0)
+    i18n (0.7.0)
+    minitest (5.9.0)
     multi_json (1.12.1)
     rack (1.6.4)
     rack-protection (1.5.3)
@@ -20,15 +28,20 @@ GEM
       rack-test
       sinatra (~> 1.4.0)
       tilt (>= 1.3, < 3)
+    thread_safe (0.3.5)
     tilt (2.0.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
 
 PLATFORMS
   ruby
+  x86-mingw32
 
 DEPENDENCIES
+  activesupport
   erubis
   sinatra (~> 1.4.7)
   sinatra-contrib
 
 BUNDLED WITH
-   1.12.5
+   1.13.0
