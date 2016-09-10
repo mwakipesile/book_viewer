@@ -6,9 +6,9 @@
 
     <title><%= @title %></title>
 
-    <link rel="stylesheet" href="stylesheets/pure-min.css">
-    <link rel="stylesheet" href="stylesheets/fonts.css">
-    <link rel="stylesheet" href="stylesheets/book_viewer.css">
+    <link rel="stylesheet" href="/stylesheets/pure-min.css">
+    <link rel="stylesheet" href="/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/stylesheets/book_viewer.css">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
               <a class="pure-menu-heading" href="/">Table of Contents</a>
 
               <ul class="pure-menu-list">
-                <% @contents.each_line do |chapter| %>
+                <% @contents.each do |chapter| %>
                 <li class="pure-menu-item">
                   <a href="#" class="pure-menu-link"><%= chapter %></a>
                 </li>
@@ -33,21 +33,9 @@
       </div>
 
       <div id="main">
-        <div class="header">
-          <h1>The Adventures of Sherlock Holmes</h1>
-          <h2>by Sir Arthur Doyle</h2>
-        </div>
-
         <div class="content">
-          <h2 class="content-subhead">Table of Contents</h2>
-
-          <div class="pure-menu">
-            <ul class="pure-menu-list">
-              <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link">Chapter 1</a>
-              </li>
-            </ul>
-          </div>
+          <h2 class="content-subhead"><%= @title %></h2>
+          <%= @chapter %>
         </div>
       </div>
   </div>
