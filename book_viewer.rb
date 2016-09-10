@@ -9,3 +9,9 @@ get "/" do
   @contents = File.read('data/toc.txt') 
   erb :home
 end
+
+get "/chapters" do
+
+  @contents = File.read('data/toc.txt') 
+  erb :chapter
+end
