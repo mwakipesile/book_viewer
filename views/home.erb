@@ -23,9 +23,9 @@
               <a class="pure-menu-heading" href="/">Table of Contents</a>
 
               <ul class="pure-menu-list">
-                <% @contents.each_line do |chapter| %>
+                <% @contents.each_line.with_index do |chapter, idx| %>
                 <li class="pure-menu-item">
-                  <a href="#" class="pure-menu-link"><%= chapter %></a>
+                  <a href="chapters/<%= idx + 1 %>" class="pure-menu-link"><%= chapter %></a>
                 </li>
                 <% end %>
               </ul>
@@ -43,9 +43,11 @@
 
           <div class="pure-menu">
             <ul class="pure-menu-list">
+              <% @contents.each_line.with_index do |chapter, idx| %>
               <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link">Chapter 1</a>
+                <a href="chapters/<%= idx + 1 %>" class="pure-menu-link"><%= chapter %></a>
               </li>
+              <% end %>
             </ul>
           </div>
         </div>
