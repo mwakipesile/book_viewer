@@ -24,39 +24,38 @@ get "/" do
   erb :home
 end
 
-get "/chapters/:number" do |chapter_num|
+get "/chapters/:number" do |chaptr_num|
+  file_name = "data/chp#{chaptr_num}.txt"
+  redirect('/') unless File.exist?(file_name)
 
-  begin
-    chapter = File.read("data/chp#{chapter_num}.txt")
-  rescue
-    redirect('/')
-  end
-
-  @title = "Chapter #{chapter_num}: #{@table_of_contents[chapter_num.to_i - 1]}"
-  @chapter = in_paragraphs(chapter)
+  @title = "Chapter #{chaptr_num}: #{@table_of_contents[chaptr_num.to_i - 1]}"
+  @chapter = in_paragraphs(File.read(file_name))
 
   erb :chapter
 end
 
 get "/search" do
   @search_str = params['query']
-  @results = []
+  @results = {}
 
   if @search_str
-    found_indices = []
-    @chapter_count = @table_of_contents.size
     @table_of_contents.each.with_index do |title, idx|
-      found_indices << idx if title.match(/#{@search_str}/i)
+      chapter_parags = File.read("data/chp#{idx + 1}.txt").split("\n\n")
+      chapter_parags.select! do |pg|
+        pg.gsub!(/#{@search_str}/i, "<strong>#{@search_str.downcase}</strong>")
+      end
+
+      if chapter_parags.empty?
+        @results[idx + 1] = [title] if title.match(/#{@search_str}/i)
+      else
+        @results[idx + 1] = [title]
+
+        chapter_parags.each do |parag|
+          @results[idx + 1] << parag
+        end
+      end  
     end
-
-    @chapter_count.times do |idx|
-      next if found_indices.include?(idx)
-
-      chapter = File.read("data/chp#{idx + 1}.txt")
-      found_indices << idx if chapter.match(/#{@search_str}/i)
-    end
-
-    @results = found_indices.map { |idx| @table_of_contents[idx]}
   end
+
   erb :search
 end

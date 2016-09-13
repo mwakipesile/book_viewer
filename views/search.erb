@@ -11,8 +11,15 @@
     <p>Sorry, no match were found</p>
   <% else %>
     <ul>
-      <% @results.each_with_index do |title, idx| %>
-        <li><a href="/chapters/<%= idx + 1 %>"><%= title %></a></li>
+      <% @results.each_pair do |chapter_number, result| %>
+        <li><strong><%= result.first %></strong></li>
+        <% if result.size > 1 %>
+          <ul>
+          <% result[1..-1].each do |parag| %>
+            <li><a href="/chapters/<%= chapter_number %>"><%= parag %></a></li>
+          <% end %>
+          </ul>
+        <% end %>
       <% end %>
     </ul>
   <% end %>
