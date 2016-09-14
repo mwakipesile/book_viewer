@@ -5,18 +5,22 @@
   <button type="submit">Search</button>
 </form>
 
-<% if @search_str %>
-<h2 class="content-subhead">Results for '<%= @search_str %>'</h2>
+<% if @query %>
+<h2 class="content-subhead">Results for '<%= @query %>'</h2>
   <% if @results.empty? %>
     <p>Sorry, no match were found</p>
   <% else %>
     <ul>
-      <% @results.each_pair do |chapter_number, result| %>
-        <li><strong><%= result.first %></strong></li>
-        <% if result.size > 1 %>
+      <% @results.each do |result| %>
+        <li><strong><%= result[:title] %></strong></li>
+        <% if result[:parags] && !result[:parags].empty? %>
           <ul>
-          <% result[1..-1].each do |parag| %>
-            <li><a href="/chapters/<%= chapter_number %>"><%= parag %></a></li>
+          <% result[:parags].each do |parag| %>
+            <li>
+              <a href="/chapters/<%= result[:number] %>#<%= parag.match(/id=['"]\s*\Kparag\d+/).to_s.to_s %>">
+                <%= parag %>
+              </a>
+            </li>
           <% end %>
           </ul>
         <% end %>

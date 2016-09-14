@@ -4,8 +4,26 @@ require "sinatra/reloader"
 
 helpers do
   def in_paragraphs(text)     
-    # text.split("\n\n").map { |paragraph| "<p>#{paragraph}</p>" }.join("\n\n")
-    "<p>#{text.gsub("\n\n", "</p>\n\n<p>")}</p>"
+    text.split("\n\n").map.with_index { |paragraph, idx|
+      "<p id='parag#{idx}'>#{paragraph}</p>" }.join("\n\n")
+    #{}"<p>#{text.gsub("\n\n", "</p>\n\n<p>")}</p>"
+  end
+
+  def search_and_save_results
+    @table_of_contents.each.with_index do |title, idx|
+      result = paragraphs_or_titles_with_matches(title, idx + 1)
+      @results << result if result
+    end
+  end
+
+  def paragraphs_or_titles_with_matches(title, number)
+    parags = in_paragraphs(File.read("data/chp#{number}.txt")).split("\n\n")
+    parags.select! do |parag|
+      parag.gsub!(/#{@query}/i, "<strong>#{@query.downcase}</strong>")
+    end
+
+    return { number: number, title: title, parags: parags } unless parags.empty?
+    return { number: number, title: title } if title.match(/#{@query}/i)
   end
 end
 
@@ -35,26 +53,11 @@ get "/chapters/:number" do |chaptr_num|
 end
 
 get "/search" do
-  @search_str = params['query']
-  @results = {}
+  @query = params['query']
+  @results = []
 
-  if @search_str
-    @table_of_contents.each.with_index do |title, idx|
-      chapter_parags = File.read("data/chp#{idx + 1}.txt").split("\n\n")
-      chapter_parags.select! do |pg|
-        pg.gsub!(/#{@search_str}/i, "<strong>#{@search_str.downcase}</strong>")
-      end
-
-      if chapter_parags.empty?
-        @results[idx + 1] = [title] if title.match(/#{@search_str}/i)
-      else
-        @results[idx + 1] = [title]
-
-        chapter_parags.each do |parag|
-          @results[idx + 1] << parag
-        end
-      end  
-    end
+  if @query
+   search_and_save_results
   end
 
   erb :search
