@@ -1,13 +1,13 @@
-require "tilt/erubis"
-require "sinatra"
-require "sinatra/reloader"
+require 'tilt/erubis'
+require 'sinatra'
+require 'sinatra/reloader'
 
 helpers do
   def in_paragraphs(text)
     text.split("\n\n").map.with_index do |paragraph, idx|
       "<p id='parag#{idx}'>#{paragraph}</p>"
     end.join("\n\n")
-    #{}"<p>#{text.gsub("\n\n", "</p>\n\n<p>")}</p>"
+    # {}"<p>#{text.gsub("\n\n", "</p>\n\n<p>")}</p>"
   end
 
   def search_and_save_results
@@ -21,7 +21,7 @@ helpers do
     pgs = paragraphs_matches_with_ids(num)
 
     return { number: num, title: title, ids_parags: pgs } unless pgs.empty?
-    return { number: num, title: title } if title.match(/#{@query}/i)
+    return { number: num, title: title } if title =~ /#{@query}/i
   end
 
   def paragraphs_matches_with_ids(number)
@@ -30,27 +30,27 @@ helpers do
     parags.each_with_index.with_object({}) do |(paragraph, idx), paragraphs|
       pg = paragraph.gsub!(/#{@query}/i, "<strong>#{@query.downcase}</strong>")
       next unless pg
-      paragraphs["parag#{idx}"] =  pg
+      paragraphs["parag#{idx}"] = pg
     end
   end
 end
 
 before do
   @heading = 'Table of Contents'
-  @table_of_contents = File.readlines("data/toc.txt")
-  @author = "Sir Arthur Doyle"
+  @table_of_contents = File.readlines('data/toc.txt')
+  @author = 'Sir Arthur Doyle'
 end
 
 not_found do
   redirect '/'
 end
 
-get "/" do
-  @title = "The Adventures of Sherlock Holmes"
+get '/' do
+  @title = 'The Adventures of Sherlock Holmes'
   erb :home
 end
 
-get "/chapters/:number" do |chaptr_num|
+get '/chapters/:number' do |chaptr_num|
   file_name = "data/chp#{chaptr_num}.txt"
   redirect('/') unless File.exist?(file_name)
 
@@ -60,13 +60,11 @@ get "/chapters/:number" do |chaptr_num|
   erb :chapter
 end
 
-get "/search" do
+get '/search' do
   @query = params['query']
   @results = []
 
-  if @query
-   search_and_save_results
-  end
+  search_and_save_results if @query
 
   erb :search
 end
