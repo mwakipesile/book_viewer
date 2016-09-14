@@ -4,8 +4,9 @@ require "sinatra/reloader"
 
 helpers do
   def in_paragraphs(text)     
-    text.split("\n\n").map.with_index { |paragraph, idx|
-      "<p id='parag#{idx}'>#{paragraph}</p>" }.join("\n\n")
+    text.split("\n\n").map.with_index do |paragraph, idx|
+      "<p id='parag#{idx}'>#{paragraph}</p>"
+    end.join("\n\n")
     #{}"<p>#{text.gsub("\n\n", "</p>\n\n<p>")}</p>"
   end
 
@@ -16,14 +17,21 @@ helpers do
     end
   end
 
-  def paragraphs_or_titles_with_matches(title, number)
-    parags = in_paragraphs(File.read("data/chp#{number}.txt")).split("\n\n")
-    parags.select! do |parag|
-      parag.gsub!(/#{@query}/i, "<strong>#{@query.downcase}</strong>")
-    end
+  def paragraphs_or_titles_with_matches(title, num)
+    pgs = paragraphs_matches_with_ids(num)
 
-    return { number: number, title: title, parags: parags } unless parags.empty?
-    return { number: number, title: title } if title.match(/#{@query}/i)
+    return { number: num, title: title, ids_parags: pgs } unless pgs.empty?
+    return { number: num, title: title } if title.match(/#{@query}/i)
+  end
+
+  def paragraphs_matches_with_ids(number)
+    parags = in_paragraphs(File.read("data/chp#{number}.txt")).split("\n\n")
+
+    parags.each_with_index.with_object({}) do |(paragraph, idx), paragraphs|
+      pg = paragraph.gsub!(/#{@query}/i, "<strong>#{@query.downcase}</strong>")
+      next unless pg
+      paragraphs["parag#{idx}"] =  pg
+    end
   end
 end
 

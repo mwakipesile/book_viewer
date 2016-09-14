@@ -12,18 +12,24 @@
   <% else %>
     <ul>
       <% @results.each do |result| %>
-        <li><strong><%= result[:title] %></strong></li>
-        <% if result[:parags] && !result[:parags].empty? %>
+        <li>
+          <a href="/chapters/<%= result[:number] %>">
+            <strong><%= result[:title] %></strong>
+          </a>
+        </li>
+
+        <% if result[:ids_parags] && !result[:ids_parags].empty? %>
           <ul>
-          <% result[:parags].each do |parag| %>
+            <% result[:ids_parags].each do |parag_id, parag| %>
             <li>
-              <a href="/chapters/<%= result[:number] %>#<%= parag.match(/id=['"]\s*\Kparag\d+/).to_s.to_s %>">
+              <a href="/chapters/<%= result[:number] %>#<%= parag_id %>">
                 <%= parag %>
               </a>
             </li>
-          <% end %>
+            <% end %>
           </ul>
         <% end %>
+
       <% end %>
     </ul>
   <% end %>
